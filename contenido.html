@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mary</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+font-family:Arial,sans-serif;
+color:white;
+overflow-x:hidden;
+}
+
+/* PANTALLA DE INICIO */
+
+#startScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:30px;
+letter-spacing:2px;
+z-index:999;
+cursor:pointer;
+transition:opacity .8s;
+}
+
+/* FONDO */
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* HERO */
+
+.hero{
+height:90vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+#mary{
+font-size:130px;
+letter-spacing:25px;
+
+text-shadow:
+0 0 10px #fff,
+0 0 20px #ff8bd8,
+0 0 40px #ff2ea6,
+0 0 80px #ff2ea6;
+
+margin-bottom:20px;
+}
+
+.text{
+font-size:22px;
+max-width:650px;
+line-height:1.6;
+text-shadow:0 0 10px #ff7bd5;
+}
+
+/* LINEA */
+
+.linea{
+width:220px;
+height:2px;
+margin:40px auto;
+
+background:linear-gradient(
+90deg,
+transparent,
+#ff7bd5,
+#ffffff,
+#ff7bd5,
+transparent
+);
+
+box-shadow:
+0 0 10px #ff7bd5,
+0 0 20px #ff7bd5;
+}
+
+/* PLANETA */
+
+#planeta-section{
+display:flex;
+justify-content:center;
+margin-top:-120px;
+padding-bottom:80px;
+}
+
+.sistema{
+position:relative;
+width:360px;
+height:360px;
+transform-style:preserve-3d;
+perspective:900px;
+}
+
+.planeta{
+position:absolute;
+top:50%;
+left:50%;
+width:180px;
+height:180px;
+transform:translate(-50%,-50%);
+border-radius:50%;
+background:url("planeta.jpg") center/cover;
+
+box-shadow:
+inset -30px -30px 50px rgba(0,0,0,0.6),
+inset 30px 30px 50px rgba(255,255,255,0.25),
+0 0 35px rgba(0,150,255,0.7),
+0 0 80px rgba(0,150,255,0.4);
+}
+
+.orbita{
+position:absolute;
+width:100%;
+height:100%;
+transform-style:preserve-3d;
+animation:girar 20s linear infinite;
+}
+
+.foto{
+position:absolute;
+top:50%;
+left:50%;
+width:90px;
+height:90px;
+margin:-45px;
+border-radius:20px;
+overflow:hidden;
+cursor:pointer;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,0.8),
+0 0 10px rgba(255,255,255,0.4);
+
+transition:transform .4s;
+}
+
+.foto img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.f1{transform:rotateY(0deg) translateZ(150px);}
+.f2{transform:rotateY(60deg) translateZ(150px);}
+.f3{transform:rotateY(120deg) translateZ(150px);}
+.f4{transform:rotateY(180deg) translateZ(150px);}
+.f5{transform:rotateY(240deg) translateZ(150px);}
+.f6{transform:rotateY(300deg) translateZ(150px);}
+
+.f1.activa{transform:rotateY(0deg) translateZ(150px) scale(1.4);}
+.f2.activa{transform:rotateY(60deg) translateZ(150px) scale(1.4);}
+.f3.activa{transform:rotateY(120deg) translateZ(150px) scale(1.4);}
+.f4.activa{transform:rotateY(180deg) translateZ(150px) scale(1.4);}
+.f5.activa{transform:rotateY(240deg) translateZ(150px) scale(1.4);}
+.f6.activa{transform:rotateY(300deg) translateZ(150px) scale(1.4);}
+
+@keyframes girar{
+from{transform:rotateY(0deg);}
+to{transform:rotateY(360deg);}
+}
+
+/* HISTORIAS */
+
+.historias{
+max-width:900px;
+margin:120px auto;
+display:flex;
+flex-direction:column;
+gap:60px;
+padding:20px;
+}
+
+.historia{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:25px;
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(8px);
+box-shadow:
+0 10px 40px rgba(0,0,0,0.6),
+0 0 20px rgba(255,120,200,0.15);
+opacity:0;
+transform:translateY(60px);
+transition:all .8s;
+}
+
+.historia.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+.historia p{
+width:55%;
+font-size:17px;
+line-height:1.7;
+}
+
+.historia img{
+width:150px;
+height:150px;
+object-fit:cover;
+border-radius:18px;
+}
+
+/* FINAL */
+
+.dia-mujer{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:60px;
+}
+
+.titulo-mujer{
+font-size:80px;
+
+background:linear-gradient(
+90deg,
+#ffffff,
+#ff7bd5,
+#ff2ea6,
+#ffffff
+);
+
+background-size:200%;
+-webkit-background-clip:text;
+color:transparent;
+
+animation:brillo 6s linear infinite;
+}
+
+@keyframes brillo{
+0%{background-position:0%}
+100%{background-position:200%}
+}
+
+.texto-mujer{
+font-size:24px;
+margin-top:30px;
+line-height:1.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+Toca la pantalla ✨
+</div>
+
+<audio id="musica" loop>
+<source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fondo"></canvas>
+
+<section class="hero">
+
+<div id="mary">MARY</div>
+
+<div class="text">
+Como una constelación en el cielo,<br>
+tu nombre ilumina mis noches.<br><br>
+Entre millones de estrellas,<br>
+siempre encuentro la que más brilla…<br>
+y esa eres tú ✨
+</div>
+
+<div class="linea"></div>
+
+</section>
+
+<section id="planeta-section">
+
+<div class="sistema">
+
+<div class="planeta"></div>
+
+<div class="orbita">
+
+<div class="foto f1"><img src="foto1.jpg"></div>
+<div class="foto f2"><img src="foto2.jpg"></div>
+<div class="foto f3"><img src="foto3.jpg"></div>
+<div class="foto f4"><img src="foto4.jpg"></div>
+<div class="foto f5"><img src="foto5.jpg"></div>
+<div class="foto f6"><img src="foto6.jpg"></div>
+
+</div>
+</div>
+</section>
+
+<section class="historias">
+
+<div class="historia">
+<p>
+Desde el momento en que apareciste,<br>
+mi mundo empezó a sentirse diferente.<br>
+Como si el universo hubiera decidido<br>
+regalarme la estrella más bonita.
+</p>
+<img src="foto7.jpg">
+</div>
+
+<div class="historia">
+<img src="foto8.jpg">
+<p>
+Hay millones de caminos en el mundo,<br>
+pero si tengo que caminar uno,<br>
+quiero que sea contigo.<br>
+Porque a tu lado todo<br>
+se siente como hogar.
+</p>
+</div>
+
+<div class="historia">
+<p>
+Cada momento contigo<br>
+se convierte en un recuerdo especial.<br>
+Como si el tiempo decidiera<br>
+detenerse solo para nosotros.
+</p>
+<img src="foto9.jpg">
+</div>
+
+<div class="historia">
+<img src="foto10.jpg">
+<p>
+No importa dónde estemos,<br>
+siempre que estés a mi lado<br>
+todo se siente más bonito,<br>
+más tranquilo, más real.
+</p>
+</div>
+
+<div class="historia">
+<p>
+Entre todas las historias del mundo,<br>
+la que más quiero vivir<br>
+es la que estoy escribiendo contigo.
+</p>
+<img src="foto11.jpg">
+</div>
+
+</section>
+
+<section class="dia-mujer">
+
+<div>
+
+<h1 class="titulo-mujer">
+Feliz Día de la Mujer
+</h1>
+
+<p class="texto-mujer">
+
+Mi vida, mi cielo, mi todo ❤️
+
+<br><br>
+
+Feliz Día de la Mujer, amor.  
+Eres lo más bonito que tengo en mi vida ✨
+
+</p>
+
+</div>
+
+</section>
+
+<script>
+
+/* ESTRELLAS Y CORAZONES */
+
+const canvas=document.getElementById("fondo");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let estrellas=[];
+let corazones=[];
+
+for(let i=0;i<200;i++){
+estrellas.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2,
+speed:Math.random()*0.3
+});
+}
+
+for(let i=0;i<20;i++){
+corazones.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:10+Math.random()*10,
+speed:0.2+Math.random()*0.3
+});
+}
+
+function dibujarCorazon(x,y,s){
+ctx.beginPath();
+ctx.moveTo(x,y);
+ctx.bezierCurveTo(x-s/2,y-s/2,x-s,y+s/3,x,y+s);
+ctx.bezierCurveTo(x+s,y+s/3,x+s/2,y-s/2,x,y);
+ctx.fillStyle="rgba(255,100,180,0.7)";
+ctx.fill();
+}
+
+function animar(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+estrellas.forEach(e=>{
+e.y+=e.speed;
+
+if(e.y>canvas.height){
+e.y=0;
+e.x=Math.random()*canvas.width;
+}
+
+ctx.beginPath();
+ctx.arc(e.x,e.y,e.size,0,Math.PI*2);
+ctx.fillStyle="white";
+ctx.fill();
+});
+
+corazones.forEach(c=>{
+c.y+=c.speed;
+
+if(c.y>canvas.height){
+c.y=-20;
+c.x=Math.random()*canvas.width;
+}
+
+dibujarCorazon(c.x,c.y,c.size);
+});
+
+requestAnimationFrame(animar);
+
+}
+
+animar();
+
+/* PLANETA FOTOS */
+
+const fotos=document.querySelectorAll(".foto");
+
+fotos.forEach(foto=>{
+foto.onclick=()=>{
+foto.classList.add("activa");
+setTimeout(()=>{
+foto.classList.remove("activa");
+},900);
+}
+});
+
+/* MUSICA */
+
+const audio=document.getElementById("musica");
+const startScreen=document.getElementById("startScreen");
+
+startScreen.addEventListener("click",()=>{
+audio.play();
+startScreen.style.opacity="0";
+setTimeout(()=>{
+startScreen.style.display="none";
+},800);
+});
+
+/* HISTORIAS */
+
+const elementos=document.querySelectorAll(".historia");
+
+function mostrarElementos(){
+
+const alturaPantalla=window.innerHeight;
+
+elementos.forEach(el=>{
+const distancia=el.getBoundingClientRect().top;
+
+if(distancia<alturaPantalla-100){
+el.classList.add("visible");
+}
+
+});
+
+}
+
+window.addEventListener("scroll",mostrarElementos);
+mostrarElementos();
+
+</script>
+
+</body>
+</html>

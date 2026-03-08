@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sorpresa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:black;
+overflow:hidden;
+font-family:'Playfair Display', serif;
+color:white;
+}
+
+canvas{
+display:block;
+}
+
+/* TEXTO */
+
+#titulo{
+position:absolute;
+top:140px;
+width:100%;
+text-align:center;
+opacity:0;
+transition:opacity 2s;
+}
+
+.linea1{
+font-size:20px;
+letter-spacing:3px;
+opacity:0.8;
+}
+
+.linea2{
+font-size:28px;
+margin-top:6px;
+font-weight:600;
+letter-spacing:2px;
+}
+
+.decoracion{
+width:140px;
+height:1px;
+background:white;
+margin:14px auto 0 auto;
+opacity:0.6;
+}
+
+/* BOTÓN */
+
+#btnContainer{
+position:absolute;
+bottom:120px;
+width:100%;
+display:flex;
+justify-content:center;
+opacity:0;
+transition:opacity 1.8s;
+}
+
+.btnElegante{
+
+position:relative;
+
+padding:14px 44px;
+font-size:16px;
+letter-spacing:1.5px;
+
+color:white;
+background:rgba(255,255,255,0.05);
+
+border-radius:40px;
+border:1px solid rgba(255,255,255,0.4);
+
+cursor:pointer;
+
+overflow:hidden;
+
+backdrop-filter:blur(6px);
+
+transition:all .35s ease;
+
+}
+
+.btnElegante::before{
+
+content:"";
+
+position:absolute;
+top:0;
+left:-120%;
+
+width:120%;
+height:100%;
+
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,0.6),
+transparent
+);
+
+transform:skewX(-25deg);
+
+animation:shine 3s infinite;
+
+}
+
+@keyframes shine{
+
+0%{ left:-120%; }
+100%{ left:140%; }
+
+}
+
+.btnElegante:hover{
+
+background:white;
+color:black;
+
+transform:scale(1.08);
+
+box-shadow:
+0 0 20px rgba(255,255,255,0.4),
+0 0 40px rgba(255,255,255,0.25);
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="titulo">
+
+<div class="linea1">
+Para la mujer
+</div>
+
+<div class="linea2">
+más Bonita del mundo!!
+</div>
+
+<div class="decoracion"></div>
+
+</div>
+
+<canvas id="c"></canvas>
+
+<div id="btnContainer">
+<button class="btnElegante" onclick="abrirVentana()">
+Ver sorpresa
+</button>
+</div>
+
+<script>
+
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const thickness = 25;
+const radius = 130;
+
+let groups=[[],[],[]];
+let visible=[0,0,0];
+
+const baseSpawn=[40,20,20];
+
+function generateSymbol(){
+
+for(let a=0;a<Math.PI*2;a+=0.01){
+for(let r=radius-thickness/2;r<radius+thickness/2;r+=1.5){
+
+groups[0].push({
+targetX:Math.cos(a)*r,
+targetY:Math.sin(a)*r-100
+});
+
+}
+}
+
+for(let y=20;y<220;y+=1.5){
+for(let x=-thickness/2;x<thickness/2;x+=1.5){
+
+groups[1].push({
+targetX:x,
+targetY:y
+});
+
+}
+}
+
+for(let x=-90;x<90;x+=1.5){
+for(let y=120-thickness/2;y<120+thickness/2;y+=1.5){
+
+groups[2].push({
+targetX:x,
+targetY:y
+});
+
+}
+}
+
+}
+
+generateSymbol();
+
+groups.forEach(group=>{
+group.forEach(p=>{
+p.x=(Math.random()-0.5)*2000;
+p.y=(Math.random()-0.5)*2000;
+p.z=Math.random()*1200;
+p.size=Math.random()*1.2+0.5;
+});
+});
+
+function drawParticle(p){
+
+p.x += (p.targetX - p.x)*0.035;
+p.y += (p.targetY - p.y)*0.035;
+p.z += (0 - p.z)*0.035;
+
+let scale=700/(700+p.z);
+
+let px=canvas.width/2 + p.x*scale;
+let py=canvas.height/2 + p.y*scale;
+
+ctx.beginPath();
+ctx.arc(px,py,p.size*scale,0,Math.PI*2);
+ctx.fillStyle="#ff2a8b";
+ctx.fill();
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+let finished=true;
+
+for(let g=0; g<groups.length; g++){
+
+visible[g] = Math.min(
+visible[g] + baseSpawn[g],
+groups[g].length
+);
+
+if(visible[g] < groups[g].length){
+finished=false;
+}
+
+for(let i=0;i<visible[g];i++){
+drawParticle(groups[g][i]);
+}
+
+}
+
+if(finished){
+
+document.getElementById("btnContainer").style.opacity=1;
+document.getElementById("titulo").style.opacity=1;
+
+}
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+function abrirVentana(){
+window.location.href = "contenido.html";
+}
+
+</script>
+
+</body>
+</html>
